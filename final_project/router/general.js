@@ -30,10 +30,9 @@ public_users.get('/isbn/:isbn',function (req, res) {
 public_users.get('/author/:author',function (req, res) {
 
     const author = req.params.author;
-    const bookKeys = Object.keys(books);
     let booksByAuthor = [];
 
-    for (const key of bookKeys) {
+    for (const key of books) {
         if (books[key].author === author) {
             booksByAuthor.push(books[key]);
         }
