@@ -6,9 +6,25 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+    const { username, password } = req.body;
+  
+    // Check if username and password are provided in the request body
+    if (!username || !password) {
+      return res.status(400).json({message: "Username and password are required."});
+    }
+  
+    // Check if the provided username already exists in our list of users
+    const doesExist = users.some(user => user.username === username);
+  
+    if (doesExist) {
+      return res.status(409).json({message: "Username already exists. Please choose another one."});
+    }
+  
+    // If the username is new, add the new user to the list
+    users.push({ "username": username, "password": password });
+    
+    return res.status(201).json({message: "User successfully registered. You can now log in."});
+  });
 
 
 // Get the book list available in the shop
@@ -85,9 +101,18 @@ public_users.get('/title/:title',function (req, res) {
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+    // Retrieve the ISBN from the request parameters
+    const isbn = req.params.isbn;
+    
+    // Check if a book with the given ISBN exists
+    if (books[isbn]) {
+      // If the book is found, send its reviews object
+      return res.json(books[isbn].reviews);
+    } else {
+      // If no book is found, return a 404 error with a message
+      return res.status(404).json({message: "Book not found"});
+    }
+  });
 
 
 module.exports.general = public_users;
